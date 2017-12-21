@@ -1,0 +1,39 @@
+{
+  "name": "__MSG_appName__",
+  "short_name": "__MSG_appShortName__",
+  "description": "__MSG_appDescription__",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "default_locale": "en",
+  "browser_action": {
+    "default_title": "issue estimation.",
+    "default_icon": "images/icon-16.png"
+  },
+  "icons": {
+    "16": "images/icon-16.png",
+    "128": "images/icon-128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*/*/issues*"],
+      "js": [
+        "scripts/jquery.js",
+        "scripts/issues.js"
+      ],
+      "css": [
+        "styles/issues.css"
+      ]
+    },
+    {
+      "matches": ["http://*/*/*/issues/milestones*"],
+      "js": [
+        "scripts/jquery.js",
+        "scripts/milestones.js"
+      ],
+      "css": [
+        "styles/milestones.css"
+      ]
+    }
+  ]
+}
+

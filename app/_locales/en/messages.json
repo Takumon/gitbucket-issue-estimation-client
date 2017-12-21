@@ -1,0 +1,14 @@
+{
+  "appName": {
+    "message": "gitbucket issue estimation client",
+    "description": "The name of the application"
+  },
+  "appShortName": {
+    "message": "gitbucket estimation",
+    "description": "The short_name (maximum of 12 characters recommended) is a short version of the app's name."
+  },
+  "appDescription": {
+    "message": "You can estimate issue in gitbucket",
+    "description": "The description of the application"
+  }
+}
