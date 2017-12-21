@@ -1,6 +1,6 @@
-# github contributions paint
+# gitbucket issue estimation client
 
-You can paint github contributions panel
+You can estimate issue in GitBucket!
 
 ## Installation
 
