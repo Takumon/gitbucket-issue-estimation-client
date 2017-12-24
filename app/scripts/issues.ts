@@ -1,5 +1,4 @@
-const tokenKey = 'b7f696143f1fdf9d546607ca537a9c0deba4ba5d';
-
+import { Config } from './environment-config';
 
 
 $(() => {
@@ -8,12 +7,15 @@ $(() => {
   }
 
   const $issueLinks = $('.issue-title');
+  if (!$issueLinks || $issueLinks.length === 0) return;
 
+  // 表示しているissueのidの配列を作成
   const issueIds = Array.from($issueLinks,  issueLink => {
     const $issueLink = $(issueLink);
     const link = $issueLink.attr('href') as string;
     const issueId = link.substring(link.lastIndexOf('/') + 1);
 
+    // 作成ついでに作業量用selectタグを画面に埋め込み
     $issueLink.after(`
       <select class="estimation" id="issue-${issueId}" data-issue-number="${issueId}")">
         <option value="">0</option>
@@ -31,57 +33,20 @@ $(() => {
     return issueId;
   });
 
-  $('.table-issues').on('change', '.estimation', function() {
-    const issueId = $(this).data('issue-number');
-    const estimation = $(this).val();
 
-    $.ajax(`http://localhost:3000/api/v3/repos${location.pathname}/${issueId}`, {
-      data: {
-        issueId,
-        estimation
-      },
-      dataType: 'json',
-      method: 'PUT'
-     }).then(function(data) {
-     }).fail(function(err) {
-     });
-
-  });
-
-
-  $.ajax(`http://localhost:3000/api/v3/repos${location.pathname}`, {
-   headers: {
-    Authorization: 'token ' + tokenKey,
-   },
+  // 表示しているissueの作業量を全てとってくる(最高25件なのでページングは考慮しない)
+  $.ajax(`${Config.SERVER_URL}/api/v3/repos${location.pathname}`, {
    data: JSON.stringify({
      'issueId': issueIds,
    }),
    dataType: 'json',
    method: 'GET'
-  }).then(function(issues) {
+  })
+  .then(function(issues) {
     Array.from(issues,  (issue: any) => {
       $(`#issue-${issue.issueId}`).val(issue.estimation || 0);
     });
-  }).fail(function(err) {
   });
-
-
-
-
-  // $.ajax(`api/v3/repos${location.pathname}${location.search}`, {
-  //  headers: {
-  //   Authorization: 'token ' + tokenKey,
-  //  },
-  //  dataType: 'json',
-  //  method: 'GET'
-  // }).then(function(data) {
-  //   alert(data);
-  // }).fail(function(err) {
-  //   alert(err);
-  // });
-
-
-
 });
 
 
