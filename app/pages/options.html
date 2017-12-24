@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>GitBucket estimation client</title>
+  <link href="../styles/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <link href="../styles/options.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div class="input-container">
+  <label for="serverUrl" class="input-container__label">Server URL
+    <input id="serverUrl" class="input-container__input" />
+  </lable>
+</div>
+<div class="input-container">
+  <label for="token" class="input-container__label">GitBucket Token
+    <input id="tokenKey" class="input-container__input" />
+  </lable>
+</div>
+<div id="status" class="alert alert-success" role="alert"></div>
+<button id="save" type="button" class="btn btn-primary">Save</button>
+<script src="../scripts/jquery.js"></script>
+<script src="../scripts/options.js"></script>
+</body>
+</html>

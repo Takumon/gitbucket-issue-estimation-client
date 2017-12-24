@@ -1,5 +1,5 @@
-import { Config } from './environment-config';
-
+import { Constant } from './constant';
+import { storateUtil } from './storage-util';
 
 $(() => {
   function upsertEstimation(event: any, issueId: any) {
@@ -35,17 +35,19 @@ $(() => {
 
 
   // 表示しているissueの作業量を全てとってくる(最高25件なのでページングは考慮しない)
-  $.ajax(`${Config.SERVER_URL}/api/v3/repos${location.pathname}`, {
-   data: JSON.stringify({
-     'issueId': issueIds,
-   }),
-   dataType: 'json',
-   method: 'GET'
-  })
-  .then(function(issues) {
-    Array.from(issues,  (issue: any) => {
-      $(`#issue-${issue.issueId}`).val(issue.estimation || 0);
-    });
+  storateUtil.getServiceInfo().then(({serverUrl}) => {
+    $.ajax(`${serverUrl}/api/v3/repos${location.pathname}`, {
+      data: JSON.stringify({
+        'issueId': issueIds,
+      }),
+      dataType: 'json',
+      method: 'GET'
+     })
+     .then(function(issues) {
+       Array.from(issues,  (issue: any) => {
+         $(`#issue-${issue.issueId}`).val(issue.estimation || 0);
+       });
+     });
   });
 });
 

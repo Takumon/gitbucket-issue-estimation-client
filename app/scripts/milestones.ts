@@ -1,4 +1,5 @@
-import { Config } from './environment-config';
+import { Constant } from './constant';
+import { storateUtil } from './storage-util';
 
 $(() => {
   const $titles = $('.milestone-title');
@@ -94,17 +95,17 @@ function calcProgressive(issues: Array<any>) {
  * @param issueIds issueIdのリスト
  */
 function findEstimationsBy(issueIds: Array<number>): Promise<Array<any>> {
-  const condition = JSON.stringify({
-    'issueId': issueIds,
-  });
+  return storateUtil.getServiceInfo().then(({serverUrl, tokenKey}) => {
 
-  return $.ajax(`${Config.SERVER_URL}/api/v3/repos/${owner()}/${repository()}/issues`, {
-    headers: {
-      Authorization: 'token ' + Config.GITBUCKET_TOCKEN_KEY,
-    },
-    data: { condition },
-    dataType: 'json',
-    method: 'GET'
+    const condition = JSON.stringify({
+      'issueId': issueIds,
+    });
+
+    return $.ajax(`${serverUrl}/api/v3/repos/${owner()}/${repository()}/issues`, {
+      data: { condition },
+      dataType: 'json',
+      method: 'GET'
+    });
   });
 }
 
@@ -129,24 +130,29 @@ function findIssuesBy(milestoneName: string, state: 'open' | 'closed'): Promise<
  * @param pageIndex ページ番号(1始まり)
  */
 function _findIssuesBy(milestoneName: string, state: 'open' | 'closed', pageIndex: number ): Promise<Array<any>> {
-  return $.ajax(`${location.origin}/api/v3/repos/${owner()}/${repository()}/issues?state=${state}&page=${pageIndex}&milestone=${milestoneName}`, {
-    headers: {
-      Authorization: 'token ' + Config.GITBUCKET_TOCKEN_KEY,
-    },
-    dataType: 'json',
-    method: 'GET'
-  })
-  .then(function(issuesPerPage) {
-    // 1ページあたりの件数を超えない場合はこのページで全件取得したことになるので
-    // 再起処理終了
-    if (issuesPerPage.length < Config.PER_PAGE_COUNT) {
-      return issuesPerPage;
-    }
+  return storateUtil.getServiceInfo().then(({serverUrl, tokenKey}) => {
 
-    // 1ページあたりの件数いっぱいの場合は次ページも存在するかもしれないので
-    // 再帰的に次ページのissueを取得する
-    return _findIssuesBy(milestoneName, state, pageIndex + 1).then(_issuesPerPage => issuesPerPage.concat(_issuesPerPage));
+    return $.ajax(`${location.origin}/api/v3/repos/${owner()}/${repository()}/issues?state=${state}&page=${pageIndex}&milestone=${milestoneName}`, {
+      headers: {
+        Authorization: 'token ' + tokenKey,
+      },
+      dataType: 'json',
+      method: 'GET'
+    })
+    .then(function(issuesPerPage) {
+      // 1ページあたりの件数を超えない場合はこのページで全件取得したことになるので
+      // 再起処理終了
+      if (issuesPerPage.length < Constant.PER_PAGE_COUNT) {
+        return issuesPerPage;
+      }
+
+      // 1ページあたりの件数いっぱいの場合は次ページも存在するかもしれないので
+      // 再帰的に次ページのissueを取得する
+      return _findIssuesBy(milestoneName, state, pageIndex + 1).then(_issuesPerPage => issuesPerPage.concat(_issuesPerPage));
+    });
+
   });
+
 }
 
 /**
@@ -180,5 +186,5 @@ function findEstimation(estimations: Array<any>, issueId: number ): number {
     }
   }
 
-  return Config.DEFAULT_VALUE_OF_NO_ESTIOMATION_ISSUE;
+  return Constant.DEFAULT_VALUE_OF_NO_ESTIOMATION_ISSUE;
 }
