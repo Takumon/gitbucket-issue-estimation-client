@@ -1,11 +1,23 @@
 import { Constant } from './constant';
 import { storageUtil } from './storage-util';
 
+
+/** マイルストーン画面のURLパターン */
+const MILESTONE_URL_PATTERN = /^\/(.*?)\/(.*?)\/issues\/milestones$/;
+
+
 /**
  * マイルストーン画面初期化時の処理で
  * DOM操作以外をまとめたサービスクラス.
  */
 class MilestoneService {
+
+  /**
+   * 現在開いている画面がマイルストーン画面か判定する.
+   */
+  isTargetUrl(): boolean {
+    return MILESTONE_URL_PATTERN.test(location.pathname);
+  }
 
 
   /**
@@ -112,14 +124,16 @@ class MilestoneService {
    * URLからリポジトリ所有者を取得する.
    */
   private owner(): string {
-    return location.pathname.replace('/milestones', '').split('/')[1];
+    const matchResult = location.pathname.match(MILESTONE_URL_PATTERN);
+    return matchResult ? matchResult[1] : '';
   }
 
   /**
    * URLからリポジトリを取得する.
    */
   private repository(): string {
-    return location.pathname.replace('/milestones', '').split('/')[2];
+    const matchResult = location.pathname.match(MILESTONE_URL_PATTERN);
+    return matchResult ? matchResult[2] : '';
   }
 
 

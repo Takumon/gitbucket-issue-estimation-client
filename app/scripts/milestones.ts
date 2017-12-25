@@ -7,11 +7,9 @@ import { milestoneService } from './milestones.service';
  */
 $(() => {
 
-  // 本処理はマイルストーン画面以外でも実行される可能性があるので
-  // milestone-titleがなければマイルストーン画面でないと判断し処理中断
-  const $titles = $('.milestone-title');
-  if (!$titles || $titles.length === 0) return;
+  if (!milestoneService.isTargetUrl()) return;
 
+  const $titles = $('.milestone-title');
 
   // Gitbucketサーバからマイルストーンにひもづくissueを全件取得
   Array.from($titles,  title => {

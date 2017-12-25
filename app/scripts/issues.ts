@@ -8,11 +8,9 @@ import { issueService } from './issues.service';
  */
 $(() => {
 
-  // 本処理はIssue画面以外でも実行される可能性があるので
-  // issue-titleがなければIssue画面でないと判断し処理中断
-  const $issueLinks = $('.issue-title');
-  if (!$issueLinks || $issueLinks.length === 0) return;
+  if (!issueService.isTargetUrl()) return;
 
+  const $issueLinks = $('.issue-title');
 
   // 表示しているissueのidの配列を作成
   const issueIds = Array.from($issueLinks,  issueLink => {

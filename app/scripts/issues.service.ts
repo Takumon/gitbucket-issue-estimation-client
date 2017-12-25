@@ -2,11 +2,22 @@ import { Constant } from './constant';
 import { storageUtil } from './storage-util';
 
 
+/** イシュー一覧画面のURLパターン */
+const ISSUES_URL_PATTERN = /^\/(.*?)\/(.*?)\/issues$/;
+
+
 /**
- * Issue画面初期化時の処理で
+ * イシュー一覧画面初期化時の処理で
  * DOM操作以外をまとめたサービスクラス.
  */
 class IssueService {
+
+  /**
+   * 現在開いている画面がイシュー一覧画面か判定する.
+   */
+  isTargetUrl(): boolean {
+    return ISSUES_URL_PATTERN.test(location.pathname);
+  }
 
   /**
    * 指定したissueの作業量を取得する.
@@ -31,14 +42,16 @@ class IssueService {
    * URLからリポジトリ所有者を取得する.
    */
   private owner(): string {
-    return location.pathname.replace('/issues', '').split('/')[1];
+    const matchResult = location.pathname.match(ISSUES_URL_PATTERN);
+    return matchResult ? matchResult[1] : '';
   }
 
   /**
    * URLからリポジトリを取得する.
    */
   private repository(): string {
-    return location.pathname.replace('/issues', '').split('/')[2];
+    const matchResult = location.pathname.match(ISSUES_URL_PATTERN);
+    return matchResult ? matchResult[2] : '';
   }
 }
 
