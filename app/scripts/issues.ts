@@ -30,16 +30,27 @@ $(() => {
   .fetchIssueEstimations(issueIds)
   .then(issueEstimations => {
     Array.from(issueEstimations,  issueEstimation => {
-      $(`#issue-${issueEstimation.issueId}`).val(issueEstimation.estimation || Constant.DEFAULT_VALUE_OF_NO_ESTIOMATION_ISSUE);
+      $(`#issue-${issueEstimation.issueId}`).removeAttr('data-init').val(issueEstimation.estimation);
     });
+
+    $('.estimation[data-init]').removeAttr('data-init').addClass('noEstimation').val('');
   });
 
   // 作業量のセレクトを変更したら、作業量をサーバー側に保存する
-  $tableIssues.on('change', '.estimation', () => {
-    const issueId = $(this).data('issue-number');
-    const estimation = Number($(this).val());
+  $tableIssues.on('change', '.estimation', event => {
+    const $select = $(event.target);
+    const issueId = $select.data('issue-number');
+    const estimation = $select.val() as string;
 
-    issuesService.upsertEstimation(issueId, estimation);
+    if ('' === estimation) {
+      // 作業量を削除
+      issuesService.deleteEstimation(issueId);
+      $select.addClass('noEstimation');
+      return;
+    }
+
+    $select.removeClass('noEstimation');
+    issuesService.upsertEstimation(issueId, Number(estimation));
  });
 
 
@@ -50,8 +61,8 @@ $(() => {
    */
   function createEstimationSelect(issueId: number): string {
     return `
-    <select class="estimation" id="issue-${issueId}" data-issue-number="${issueId}")">
-      <option value="">0</option>
+    <select class="estimation" data-init id="issue-${issueId}" data-issue-number="${issueId}")">
+      <option value="">No estimation</option>
       <option value="1">1</option>
       <option value="2">2</option>
       <option value="3">3</option>

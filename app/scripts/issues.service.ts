@@ -57,6 +57,18 @@ class IssuesService {
   }
 
   /**
+   * 指定したイシュー番号の作業量を削除する.
+   *
+   * @param issueId イシュー番号
+   */
+  deleteEstimation(issueId: number): Promise<any> {
+    return $.ajax(`http://localhost:3000/api/v3/repos/${this.owner()}/${this.repository()}/issues/${issueId}`, {
+      dataType: 'json',
+      method: 'DELETE'
+    });
+  }
+
+  /**
    * URLからリポジトリ所有者を取得する.
    */
   private owner(): string {
