@@ -49,7 +49,7 @@ $(() => {
     return `
       <h6 class="progress-title_estimation">Estimation</h6>
       <div class="progress" style="height: 12px; margin-bottom: 8px;">
-        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="${closedIssueRate}" aria-valuemin="0" aria-valuemax="100" style="width: 6%">
+        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="${closedIssueRate}" aria-valuemin="0" aria-valuemax="100" style="width: ${closedIssueRate}%">
         </div>
       </div>
 
