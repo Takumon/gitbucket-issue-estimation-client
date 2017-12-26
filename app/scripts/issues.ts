@@ -1,15 +1,16 @@
 import { Constant } from './constant';
 import { storageUtil } from './storage-util';
-import { issueService } from './issues.service';
+import { issuesService } from './issues.service';
 
 
 /**
- * Issue画面の初期化処理
+ * イシュー一覧画面の初期化処理
  */
 $(() => {
 
-  if (!issueService.isTargetUrl()) return;
+  if (!issuesService.isTargetUrl()) return;
 
+  const $tableIssues = $('.table-issues');
   const $issueLinks = $('.issue-title');
 
   // 表示しているissueのidの配列を作成
@@ -25,13 +26,21 @@ $(() => {
   });
 
   // issueの作業量を取得してUIに反映
-  issueService
+  issuesService
   .fetchIssueEstimations(issueIds)
   .then(issueEstimations => {
     Array.from(issueEstimations,  issueEstimation => {
       $(`#issue-${issueEstimation.issueId}`).val(issueEstimation.estimation || Constant.DEFAULT_VALUE_OF_NO_ESTIOMATION_ISSUE);
     });
   });
+
+  // 作業量のセレクトを変更したら、作業量をサーバー側に保存する
+  $tableIssues.on('change', '.estimation', () => {
+    const issueId = $(this).data('issue-number');
+    const estimation = Number($(this).val());
+
+    issuesService.upsertEstimation(issueId, estimation);
+ });
 
 
   /**

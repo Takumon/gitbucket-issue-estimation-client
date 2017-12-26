@@ -10,7 +10,7 @@ const ISSUES_URL_PATTERN = /^\/(.*?)\/(.*?)\/issues$/;
  * イシュー一覧画面初期化時の処理で
  * DOM操作以外をまとめたサービスクラス.
  */
-class IssueService {
+class IssuesService {
 
   /**
    * 現在開いている画面がイシュー一覧画面か判定する.
@@ -38,6 +38,24 @@ class IssueService {
           });
   }
 
+
+  /**
+   * 指定したイシュー番号の作業量を登録または更新する.
+   *
+   * @param issueId イシュー番号
+   * @param estimation 作業量
+   */
+  upsertEstimation(issueId: number, estimation: number): Promise<any> {
+    return $.ajax(`http://localhost:3000/api/v3/repos/${this.owner()}/${this.repository()}/issues/${issueId}`, {
+      data: {
+        issueId,
+        estimation
+      },
+      dataType: 'json',
+      method: 'PUT'
+    });
+  }
+
   /**
    * URLからリポジトリ所有者を取得する.
    */
@@ -55,6 +73,6 @@ class IssueService {
   }
 }
 
-const issueService = new IssueService();
-export { issueService };
+const issuesService = new IssuesService();
+export { issuesService };
 
