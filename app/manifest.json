@@ -33,6 +33,16 @@
       ]
     },
     {
+      "matches": ["http://*/*/*/issues/*"],
+      "js": [
+        "scripts/jquery.js",
+        "scripts/issue.js"
+      ],
+      "css": [
+        "styles/issue.css"
+      ]
+    },
+    {
       "matches": ["http://*/*/*/issues/milestones*"],
       "js": [
         "scripts/jquery.js",
