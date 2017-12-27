@@ -1,7 +1,7 @@
 {
   "name": "gitbucket-issue-estimation-client",
   "private": true,
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "GitBucketのissueに作業量を設定にするサービス（クライアント側）",
   "scripts": {
     "start": "npm run dev:chrome",

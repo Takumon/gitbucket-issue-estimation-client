@@ -46,14 +46,18 @@ class IssuesService {
    * @param estimation 作業量
    */
   upsertEstimation(issueId: number, estimation: number): Promise<any> {
-    return $.ajax(`http://localhost:3000/api/v3/repos/${this.owner()}/${this.repository()}/issues/${issueId}`, {
-      data: {
-        issueId,
-        estimation
-      },
-      dataType: 'json',
-      method: 'PUT'
-    });
+    return storageUtil
+          .getOptions()
+          .then(({serverUrl}) => {
+            return $.ajax(`${serverUrl}/api/v3/repos/${this.owner()}/${this.repository()}/issues/${issueId}`, {
+              data: {
+                issueId,
+                estimation
+              },
+              dataType: 'json',
+              method: 'PUT'
+            });
+          });
   }
 
   /**
@@ -62,10 +66,14 @@ class IssuesService {
    * @param issueId イシュー番号
    */
   deleteEstimation(issueId: number): Promise<any> {
-    return $.ajax(`http://localhost:3000/api/v3/repos/${this.owner()}/${this.repository()}/issues/${issueId}`, {
-      dataType: 'json',
-      method: 'DELETE'
-    });
+    return storageUtil
+          .getOptions()
+          .then(({serverUrl}) => {
+            return $.ajax(`${serverUrl}/api/v3/repos/${this.owner()}/${this.repository()}/issues/${issueId}`, {
+              dataType: 'json',
+              method: 'DELETE'
+            });
+          });
   }
 
   /**
