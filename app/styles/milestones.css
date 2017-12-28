@@ -6,6 +6,10 @@
   margin-top: 0;
   cursor: pointer;
 }
+.progress-title_estimation:hover {
+  background: rgb(216, 211, 241);
+  color: rgb(104, 104, 104);
+}
 
 .progress-title_count {
   margin-top: 12px;

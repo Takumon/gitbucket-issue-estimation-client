@@ -20,8 +20,6 @@ $(() => {
   Promise.all(promiseList)
   .then(() => {
     // マイルストーンエリアを初期化後にバーンダウンチャートエリアの初期化をする
-    alert('OK!');
-
     appendModal();
   });
 
@@ -94,7 +92,7 @@ $(() => {
   function appendModal() {
     const modal = `
     <div id="estimation-modal">Estimation modal!
-      <canvas id="estimaitonChartCanvas" height="90%" width="90%"></canvas>
+      <canvas id="estimaitonChartCanvas" style="height:100%; width:100%"></canvas>
     </div>
     `;
 
@@ -113,7 +111,6 @@ $(() => {
     const top = (windowHight - modalHight) / 2;
 
     $modal.css({left, top}).click(hideModal);
-
     drawChart($modal.find('#estimaitonChartCanvas') as JQuery<HTMLCanvasElement>);
   }
 
@@ -149,13 +146,14 @@ $(() => {
           }]
       },
       options: {
-          scales: {
-              yAxes: [{
-                  ticks: {
-                      beginAtZero: true
-                  }
-              }]
+        layout: {
+          padding: {
+            left: 50,
+            right: 0,
+            top: 0,
+            bottom: 0
           }
+        },
       }
     });
   }
