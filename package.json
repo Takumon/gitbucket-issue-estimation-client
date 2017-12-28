@@ -62,7 +62,9 @@
     "yargs": "^8.x.x"
   },
   "dependencies": {
+    "@types/chart.js": "^2.7.3",
     "bootstrap": "^3.3.7",
+    "chart.js": "^2.7.1",
     "jquery": "^3.2.1"
   }
 }

@@ -9,29 +9,54 @@ $(() => {
 
   if (!milestoneService.isTargetUrl()) return;
 
-  const $titles = $('.milestone-title');
+  const $milestoneTitles = $('.milestone-title');
 
-  // Gitbucketサーバからマイルストーンにひもづくissueを全件取得
-  Array.from($titles,  title => {
-    const milestoneName = $(title).text();
-    const $progressArea = $(title).parent().next();
-    $progressArea.prepend('<h6 class="progress-title_count">Count</h6>');
+  // Gitbucketサーバからマイルストーンにひもづくissueを全件取得して
+  // マイルストーンエリアを初期化する
+  const promiseList = Array.from($milestoneTitles,  initEstimationArea);
 
-    Promise.resolve()
-    .then(() => {
+  Promise.all(promiseList)
+  .then(() => {
+    // マイルストーンエリアを初期化後にバーンダウンチャートエリアの初期化をする
+    alert('OK!');
 
-      return Promise.all([
-        milestoneService.findIssuesBy(milestoneName, 'open').then(milestoneService.addEstimation.bind(milestoneService)),
-        milestoneService.findIssuesBy(milestoneName, 'closed').then(milestoneService.addEstimation.bind(milestoneService)),
-      ]);
-    })
-    .then(issues => {
-      const openEstimation = milestoneService.sumEstimation(issues[0]);
-      const closedEstimation = milestoneService.sumEstimation(issues[1]);
-
-      $progressArea.prepend(createIssueEstimationProgress(openEstimation, closedEstimation));
-    });
+    appendModal();
   });
+
+
+
+
+  /**
+   * マイルストーンごとの作業量ベースの進捗率エリアを初期化する
+   *
+   * @param milestonTitle マイルストーンのタイトルのDOM要素
+   */
+  function initEstimationArea(milestonTitle: HTMLElement): Promise<any> {
+    return new Promise(function (resolve, reject) {
+      const milestoneName = $(milestonTitle).text();
+      const $progressArea = $(milestonTitle).parent().next();
+      $progressArea.prepend('<h6 class="progress-title_count">Count</h6>');
+
+      Promise.resolve()
+      .then(() => {
+
+        return Promise.all([
+          milestoneService.findIssuesBy(milestoneName, 'open').then(milestoneService.addEstimation.bind(milestoneService)),
+          milestoneService.findIssuesBy(milestoneName, 'closed').then(milestoneService.addEstimation.bind(milestoneService)),
+        ]);
+      })
+      .then(issues => {
+        const openEstimation = milestoneService.sumEstimation(issues[0]);
+        const closedEstimation = milestoneService.sumEstimation(issues[1]);
+
+        $progressArea.prepend(createIssueEstimationProgress(openEstimation, closedEstimation));
+
+        // 処理終了
+        resolve();
+      });
+    });
+  }
+
 
 
   /**
@@ -61,4 +86,41 @@ $(() => {
         </div>
       </div>`;
   }
+
+  // モーダル操作系
+
+  function appendModal() {
+    const modal = `
+    <div id="estimation-modal">Estimation modal!</div>
+    `;
+
+    $('body').append(modal);
+
+    $('.progress-title_estimation').click(showModal);
+
+    const $modal = $('#estimation-modal');
+
+    const $window = $(window);
+    const windowWidth = $window.width() as number;
+    const windowHight = $window.height() as number;
+    const modalWidth = $modal.outerWidth() as number;
+    const modalHight = $modal.outerHeight() as number;
+    const left = (windowWidth - modalWidth) / 2;
+    const top = (windowHight - modalHight) / 2;
+
+    $modal.css({left, top}).click(hideModal);
+  }
+
+  function removeModal() {
+    $('#estimation-modal').remove();
+  }
+
+  function showModal() {
+    $('#estimation-modal').addClass('show');
+  }
+
+  function hideModal() {
+    $('#estimation-modal').removeClass('show');
+  }
+
 });

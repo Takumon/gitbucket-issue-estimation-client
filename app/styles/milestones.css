@@ -4,8 +4,28 @@
 
 .progress-title_estimation {
   margin-top: 0;
+  cursor: pointer;
 }
 
 .progress-title_count {
   margin-top: 12px;
 }
+
+#estimation-modal {
+  display: none;
+  position: fixed;
+  height: 90%;
+  width: 90%;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px 0 #000;
+  background: rgb(255, 255, 255);
+}
+
+
+#estimation-modal.show {
+  display: block;
+  z-index: 1031; /* Gitbucketの左メニュー810とヘッダー1030を超える値 */
+}
+
+
