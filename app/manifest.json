@@ -25,7 +25,7 @@
     {
       "matches": ["http://*/*/*/issues*"],
       "js": [
-        "scripts/jquery.js",
+        "scripts/jquery.min.js",
         "scripts/issues.js"
       ],
       "css": [
@@ -35,7 +35,7 @@
     {
       "matches": ["http://*/*/*/issues/*"],
       "js": [
-        "scripts/jquery.js",
+        "scripts/jquery.min.js",
         "scripts/issue.js"
       ],
       "css": [
@@ -45,7 +45,7 @@
     {
       "matches": ["http://*/*/*/issues/milestones*"],
       "js": [
-        "scripts/jquery.js",
+        "scripts/jquery.min.js",
         "scripts/milestones.js"
       ],
       "css": [
