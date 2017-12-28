@@ -46,6 +46,7 @@
       "matches": ["http://*/*/*/issues/milestones*"],
       "js": [
         "scripts/jquery.min.js",
+        "scripts/Chart.min.js",
         "scripts/milestones.js"
       ],
       "css": [
