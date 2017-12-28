@@ -2,7 +2,10 @@ import { Constant } from './constant';
 import { storageUtil } from './storage-util';
 import { milestoneService } from './milestones.service';
 
-declare const Chart: any;
+interface IssuesOfMilestone {
+  milestoneName: string;
+  issues: Array<any>;
+}
 
 /**
  * マイルストーン画面の初期化処理
@@ -16,12 +19,7 @@ $(() => {
   // Gitbucketサーバからマイルストーンにひもづくissueを全件取得して
   // マイルストーンエリアを初期化する
   const promiseList = Array.from($milestoneTitles,  initEstimationArea);
-
-  Promise.all(promiseList)
-  .then(() => {
-    // マイルストーンエリアを初期化後にバーンダウンチャートエリアの初期化をする
-    appendModal();
-  });
+  Promise.all(promiseList);
 
 
 
@@ -31,7 +29,7 @@ $(() => {
    *
    * @param milestonTitle マイルストーンのタイトルのDOM要素
    */
-  function initEstimationArea(milestonTitle: HTMLElement): Promise<any> {
+  function initEstimationArea(milestonTitle: HTMLElement): Promise<IssuesOfMilestone> {
     return new Promise(function (resolve, reject) {
       const milestoneName = $(milestonTitle).text();
       const $progressArea = $(milestonTitle).parent().next();
@@ -52,7 +50,7 @@ $(() => {
         $progressArea.prepend(createIssueEstimationProgress(openEstimation, closedEstimation));
 
         // 処理終了
-        resolve();
+        resolve({ milestoneName, issues });
       });
     });
   }
@@ -86,88 +84,4 @@ $(() => {
         </div>
       </div>`;
   }
-
-  // モーダル操作系
-
-  function appendModal() {
-    const modal = `
-    <div id="estimation-modal">Estimation modal!
-      <canvas id="estimaitonChartCanvas" style="height:100%; width:100%"></canvas>
-    </div>
-    `;
-
-    $('body').append(modal);
-
-    $('.progress-title_estimation').click(showModal);
-
-    const $modal = $('#estimation-modal');
-
-    const $window = $(window);
-    const windowWidth = $window.width() as number;
-    const windowHight = $window.height() as number;
-    const modalWidth = $modal.outerWidth() as number;
-    const modalHight = $modal.outerHeight() as number;
-    const left = (windowWidth - modalWidth) / 2;
-    const top = (windowHight - modalHight) / 2;
-
-    $modal.css({left, top}).click(hideModal);
-    drawChart($modal.find('#estimaitonChartCanvas') as JQuery<HTMLCanvasElement>);
-  }
-
-  function drawChart($drawArea: JQuery<HTMLCanvasElement>) {
-
-    // jQueryオブジェクト[0]とすれば、getContext("2D")できる。
-    const ctx = $drawArea[0].getContext('2d');
-    // グラフ描画
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-          labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-          datasets: [{
-              label: '# of Votes',
-              data: [12, 19, 3, 5, 2, 3],
-              backgroundColor: [
-                  'rgba(255, 99, 132, 0.2)',
-                  'rgba(54, 162, 235, 0.2)',
-                  'rgba(255, 206, 86, 0.2)',
-                  'rgba(75, 192, 192, 0.2)',
-                  'rgba(153, 102, 255, 0.2)',
-                  'rgba(255, 159, 64, 0.2)'
-              ],
-              borderColor: [
-                  'rgba(255,99,132,1)',
-                  'rgba(54, 162, 235, 1)',
-                  'rgba(255, 206, 86, 1)',
-                  'rgba(75, 192, 192, 1)',
-                  'rgba(153, 102, 255, 1)',
-                  'rgba(255, 159, 64, 1)'
-              ],
-              borderWidth: 1
-          }]
-      },
-      options: {
-        layout: {
-          padding: {
-            left: 50,
-            right: 0,
-            top: 0,
-            bottom: 0
-          }
-        },
-      }
-    });
-  }
-
-  function removeModal() {
-    $('#estimation-modal').remove();
-  }
-
-  function showModal() {
-    $('#estimation-modal').addClass('show');
-  }
-
-  function hideModal() {
-    $('#estimation-modal').removeClass('show');
-  }
-
 });
